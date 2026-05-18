@@ -1,18 +1,28 @@
 import java.io.*;
 import java.util.*;
 
+/**
+ * Lee archivos, ayuda a obtener las conexiones del grafo.
+ */
 public class TextManager {
 
     private List<Edge<String>> edges;
 
     private Set<String> ciudades;
 
+    /**
+     * Constructor de la clase.
+     */
     public TextManager() {
 
         edges = new ArrayList<>();
         ciudades = new HashSet<>();
     }
 
+    /**
+     * Lee un archivo y obtiene las conexiones del grafo.
+     * @param nombreArchivo nombre del archivo
+     */
     public void leerArchivo(String nombreArchivo) {
 
         try (BufferedReader br =
@@ -70,18 +80,33 @@ public class TextManager {
         }
     }
 
+    /**
+     * Regresa la lista de aristas.
+     * @return lista de aristas
+     */
     public List<Edge<String>> getEdges() {
         return edges;
     }
 
+    /**
+     * Regresa el conjunto de ciudades.
+     * @return conjunto de ciudades
+     */
     public Set<String> getCiudades() {
         return ciudades;
     }
 
+    /**
+     * Regresa la cantidad de ciudades.
+     * @return numero de ciudades
+     */
     public int getNumeroCiudades() {
         return ciudades.size();
     }
 
+    /**
+     * Imprime las aristas.
+     */
     public void imprimirEdges() {
 
         System.out.println("Aristas:");
@@ -91,6 +116,9 @@ public class TextManager {
         }
     }
 
+    /**
+     * Imprime las ciudades.
+     */
     public void imprimirCiudades() {
 
         System.out.println("Ciudades:");

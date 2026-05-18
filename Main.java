@@ -1,7 +1,14 @@
 import java.util.*;
 
+/**
+ * Main del programa.
+ */
 public class Main {
 
+    /**
+     * Metodo principal.
+     * @param args argumentos de linea de comandos
+     */
     public static void main(String[] args) {
 
         Scanner scanner = new Scanner(System.in);
