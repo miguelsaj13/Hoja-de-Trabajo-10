@@ -1,5 +1,9 @@
 import java.util.*;
 
+/**
+ * Representa un grafo dirigido y con peso.
+ * @param <T> tipo de dato de los vertices
+ */
 public class Grafo<T> {
 
     private static final int INF = Integer.MAX_VALUE;
@@ -14,6 +18,10 @@ public class Grafo<T> {
 
     private List<T> nombresVertices;
 
+    /**
+     * Constructor del grafo.
+     * @param numeroVertices cantidad de vertices
+     */
     public Grafo(int numeroVertices) {
 
         this.numeroVertices = numeroVertices;
@@ -28,6 +36,9 @@ public class Grafo<T> {
         inicializarMatrices();
     }
 
+    /**
+     * Inicia las matrices del grafo.
+     */
     private void inicializarMatrices() {
 
         for (int i = 0; i < numeroVertices; i++) {
@@ -47,6 +58,10 @@ public class Grafo<T> {
         }
     }
 
+    /**
+     * Agrega un vertice al grafo.
+     * @param vertice vertice a agregar
+     */
     public void agregarVertice(T vertice) {
 
         if (!vertices.containsKey(vertice)) {
@@ -56,11 +71,22 @@ public class Grafo<T> {
         }
     }
 
+    /**
+     * Verifica si un vertice existe.
+     * @param vertice vertice a buscar
+     * @return true si existe
+     */
     public boolean existeVertice(T vertice) {
 
         return vertices.containsKey(vertice);
     }
 
+    /**
+     * Agrega una arista al grafo.
+     * @param origen vertice origen
+     * @param destino vertice destino
+     * @param peso peso de la conexion
+     */
     public void agregarArista(T origen, T destino, int peso) {
 
         int i = vertices.get(origen);
@@ -69,6 +95,10 @@ public class Grafo<T> {
         adyacencia[i][j] = peso;
     }
 
+    /**
+     * Agrega una arista usando Edge.
+     * @param edge arista a agregar
+     */
     public void agregarArista(Edge<T> edge) {
 
         agregarArista(
@@ -78,6 +108,11 @@ public class Grafo<T> {
         );
     }
 
+    /**
+     * Elimina una arista del grafo.
+     * @param origen vertice origen
+     * @param destino vertice destino
+     */
     public void eliminarArista(T origen, T destino) {
 
         int i = vertices.get(origen);
@@ -86,6 +121,9 @@ public class Grafo<T> {
         adyacencia[i][j] = INF;
     }
 
+    /**
+     * Copia la matriz de adyacencia a la matriz de distancias.
+     */
     private void copiarAdyacenciaADist() {
 
         for (int i = 0; i < numeroVertices; i++) {
@@ -103,6 +141,9 @@ public class Grafo<T> {
         }
     }
 
+    /**
+     * Algoritmo de Floyd.
+     */
     public void floyd() {
 
         copiarAdyacenciaADist();
@@ -132,6 +173,12 @@ public class Grafo<T> {
         }
     }
 
+    /**
+     * Obtiene la distancia minima entre dos vertices.
+     * @param origen vertice origen
+     * @param destino vertice destino
+     * @return distancia minima
+     */
     public int getDistancia(T origen, T destino) {
 
         if (!existeVertice(origen) ||
@@ -146,6 +193,12 @@ public class Grafo<T> {
         return dist[i][j];
     }
 
+    /**
+     * Obtiene la ruta minima entre dos vertices.
+     * @param origen vertice origen
+     * @param destino vertice destino
+     * @return lista con la ruta
+     */
     public List<T> getRuta(T origen, T destino) {
 
         List<T> ruta = new ArrayList<>();
@@ -175,6 +228,9 @@ public class Grafo<T> {
         return ruta;
     }
 
+    /**
+     * Imprime la matriz de distancias.
+     */
     public void imprimirMatriz() {
 
         System.out.println("Matriz:");
@@ -194,6 +250,9 @@ public class Grafo<T> {
         }
     }
 
+    /**
+     * Imprime los vertices del grafo.
+     */
     public void imprimirVertices() {
 
         for (T vertice : nombresVertices) {
@@ -202,6 +261,10 @@ public class Grafo<T> {
         }
     }
 
+    /**
+     * Obtiene el centro del grafo.
+     * @return vertice centro
+     */
     public T getCentroGrafo() {
         int mejorEccentricidad = INF;
         T centro = null;
