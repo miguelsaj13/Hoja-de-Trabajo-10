@@ -2,8 +2,9 @@ import java.util.*;
 
 public class Grafo<T> {
 
-    private static final int INF = 9999999;
+    private static final int INF = Integer.MAX_VALUE;
 
+    private int[][] adyacencia;
     private int[][] dist;
     private int[][] next;
 
@@ -17,6 +18,7 @@ public class Grafo<T> {
 
         this.numeroVertices = numeroVertices;
 
+        adyacencia = new int[numeroVertices][numeroVertices];
         dist = new int[numeroVertices][numeroVertices];
         next = new int[numeroVertices][numeroVertices];
 
@@ -33,10 +35,12 @@ public class Grafo<T> {
             for (int j = 0; j < numeroVertices; j++) {
 
                 if (i == j) {
-                    dist[i][j] = 0;
+                    adyacencia[i][j] = 0;
                 } else {
-                    dist[i][j] = INF;
+                    adyacencia[i][j] = INF;
                 }
+
+                dist[i][j] = adyacencia[i][j];
 
                 next[i][j] = -1;
             }
@@ -52,14 +56,26 @@ public class Grafo<T> {
         }
     }
 
+    public boolean existeVertice(T vertice) {
+
+        return vertices.containsKey(vertice);
+    }
+
     public void agregarArista(T origen, T destino, int peso) {
 
         int i = vertices.get(origen);
         int j = vertices.get(destino);
 
-        dist[i][j] = peso;
+        adyacencia[i][j] = peso;
+    }
 
-        next[i][j] = j;
+    public void agregarArista(Edge<T> edge) {
+
+        agregarArista(
+            edge.getOrigen(),
+            edge.getDestino(),
+            edge.getPeso()
+        );
     }
 
     public void eliminarArista(T origen, T destino) {
@@ -67,11 +83,29 @@ public class Grafo<T> {
         int i = vertices.get(origen);
         int j = vertices.get(destino);
 
-        dist[i][j] = INF;
-        next[i][j] = -1;
+        adyacencia[i][j] = INF;
+    }
+
+    private void copiarAdyacenciaADist() {
+
+        for (int i = 0; i < numeroVertices; i++) {
+
+            for (int j = 0; j < numeroVertices; j++) {
+
+                dist[i][j] = adyacencia[i][j];
+
+                if (adyacencia[i][j] != INF && i != j) {
+                    next[i][j] = j;
+                } else {
+                    next[i][j] = -1;
+                }
+            }
+        }
     }
 
     public void floyd() {
+
+        copiarAdyacenciaADist();
 
         for (int k = 0; k < numeroVertices; k++) {
 
@@ -79,11 +113,13 @@ public class Grafo<T> {
 
                 for (int j = 0; j < numeroVertices; j++) {
 
-                    if (dist[i][k] == INF || dist[k][j] == INF) {
+                    if (dist[i][k] == INF ||
+                        dist[k][j] == INF) {
                         continue;
                     }
 
-                    int nuevaDistancia = dist[i][k] + dist[k][j];
+                    int nuevaDistancia =
+                        dist[i][k] + dist[k][j];
 
                     if (nuevaDistancia < dist[i][j]) {
 
@@ -98,6 +134,12 @@ public class Grafo<T> {
 
     public int getDistancia(T origen, T destino) {
 
+        if (!existeVertice(origen) ||
+            !existeVertice(destino)) {
+
+            return INF;
+        }
+
         int i = vertices.get(origen);
         int j = vertices.get(destino);
 
@@ -107,6 +149,12 @@ public class Grafo<T> {
     public List<T> getRuta(T origen, T destino) {
 
         List<T> ruta = new ArrayList<>();
+
+        if (!existeVertice(origen) ||
+            !existeVertice(destino)) {
+
+            return ruta;
+        }
 
         int i = vertices.get(origen);
         int j = vertices.get(destino);
@@ -127,37 +175,9 @@ public class Grafo<T> {
         return ruta;
     }
 
-    public T getCentroGrafo() {
-
-        int mejorEccentricidad = INF;
-
-        T centro = null;
-
-        for (int i = 0; i < numeroVertices; i++) {
-
-            int eccentricidad = 0;
-
-            for (int j = 0; j < numeroVertices; j++) {
-
-                if (dist[i][j] != INF) {
-                    eccentricidad = Math.max(eccentricidad, dist[i][j]);
-                }
-            }
-
-            if (eccentricidad < mejorEccentricidad) {
-
-                mejorEccentricidad = eccentricidad;
-
-                centro = nombresVertices.get(i);
-            }
-        }
-
-        return centro;
-    }
-
     public void imprimirMatriz() {
 
-        System.out.println("Matriz de Distancias:");
+        System.out.println("Matriz:");
 
         for (int i = 0; i < numeroVertices; i++) {
 
@@ -176,10 +196,39 @@ public class Grafo<T> {
 
     public void imprimirVertices() {
 
-        System.out.println("Vertices:");
-
         for (T vertice : nombresVertices) {
+
             System.out.println(vertice);
         }
+    }
+
+    public T getCentroGrafo() {
+        int mejorEccentricidad = INF;
+        T centro = null;
+
+        for (int i = 0; i < numeroVertices; i++) {
+
+            int eccentricidad = 0;
+
+            boolean desconectado = false;
+
+            for (int j = 0; j < numeroVertices; j++) {
+
+                if (dist[i][j] == INF) {
+
+                    desconectado = true;
+                    break;
+                }
+
+                eccentricidad = Math.max(eccentricidad, dist[i][j]);
+            }
+
+            if (!desconectado && eccentricidad < mejorEccentricidad) {
+                mejorEccentricidad = eccentricidad;
+                centro = nombresVertices.get(i);
+            }
+        }
+
+        return centro;
     }
 }
