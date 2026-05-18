@@ -10,8 +10,7 @@ public class Main {
 
         tm.leerArchivo("guategrafo.txt");
 
-        Grafo<String> grafo =
-            new Grafo<>(tm.getNumeroCiudades());
+        Grafo<String> grafo = new Grafo<>(tm.getNumeroCiudades());
 
         for (String ciudad : tm.getCiudades()) {
 
